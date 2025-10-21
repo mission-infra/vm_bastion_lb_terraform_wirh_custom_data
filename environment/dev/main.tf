@@ -1,14 +1,14 @@
 module "rg" {
   source   = "../../module/01_azurerm_rg"
   rg_name  = "mybastion_rg"
-  location = "East US"
+  location = "japan east"
 }
 
 module "vnet" {
   depends_on    = [module.rg]
   source        = "../../module/02_azurerm_vnet"
   vnet_name     = "oppo-vnet"
-  location      = "east us"
+  location      = "japan east"
   rg_name       = "mybastion_rg"
   address_space = ["10.0.0.0/16"]
 }
@@ -35,7 +35,7 @@ module "pip" {
   depends_on     = [module.rg]
   source         = "../../module/04_azurerm_public_ip"
   public_ip_name = "vivopip"
-  location       = "east us"
+  location       = "japan east"
   rg_name        = "mybastion_rg"
 }
 
@@ -44,7 +44,7 @@ module "frontend_vm" {
   source                    = "../../module/05_azurerm_vm"
   vm_name                   = "bastion-frontendvm"
   rg_name                   = "mybastion_rg"
-  location                  = "east us"
+  location                  = "japan east"
   vm_size                   = "Standard_B1s"
   admin_username            = data.azurerm_key_vault_secret.kv_usec.value
   admin_password            = data.azurerm_key_vault_secret.kv_psec.value
@@ -58,7 +58,7 @@ module "backend_vm" {
   source                    = "../../module/05_azurerm_vm"
   vm_name                   = "bastion-backendvm"
   rg_name                   = "mybastion_rg"
-  location                  = "east us"
+  location                  = "japan east"
   vm_size                   = "Standard_B1s"
   admin_username            = data.azurerm_key_vault_secret.kv_usec.value
   admin_password            = data.azurerm_key_vault_secret.kv_psec.value
@@ -72,7 +72,7 @@ module "bastion_host" {
   source                = "../../module/06_azurerm_bh"
   bastion_name          = "mybastionhost"
   rg_name               = "mybastion_rg"
-  location              = "east us"
+  location              = "japan east"
   ip_configuration_name = "bst_ip"
   public_ip_address_id  = data.azurerm_public_ip.pipdata.id
   subnet_id             = data.azurerm_subnet.subdata.id
@@ -82,7 +82,7 @@ module "nsg" {
   depends_on = [module.vm_subnet]
   source     = "../../module/07_azurerm_nsg"
   rg_name    = "mybastion_rg"
-  location   = "east us"
+  location   = "japan east"
   nsg_name   = "vm-nsg"
   subnet_id  = data.azurerm_subnet.subvmdata.id
 }
@@ -91,7 +91,7 @@ module "lb" {
   depends_on                     = [module.rg,]
   source                         = "../../module/08_azurerm_lb"
   lb_name                        = "myloadbalancer"
-  location                       = "east us"
+  location                       = "japan east"
   resource_group_name            = "mybastion_rg"
   frontend_ip_configuration_name = "lb-frontend-ip"
   backend_address_pool_name      = "lb-backend-pool"
